@@ -1,0 +1,17 @@
+html {
+    background: #282c34;
+}
+
+div {
+    margin: 20px;
+}
+
+button {
+    text-transform: capitalize;
+}
+
+p {
+    color: #F9FEFF;
+    margin-bottom: 30px;
+    margin-left: 1px;
+}
