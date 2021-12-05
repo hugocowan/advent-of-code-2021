@@ -138,10 +138,7 @@ const challenges = {
 
 
     seventhChallenge(name) {
-        let result = 0;
-
-        console.log(bingoBoards)
-
+        let result = getNthWinningBingoBoardScore();
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -149,7 +146,7 @@ const challenges = {
 
 
     eigthChallenge(name) {
-        let result = 0;
+        let result = getNthWinningBingoBoardScore(100);
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
