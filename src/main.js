@@ -154,7 +154,7 @@ const challenges = {
 
 
     ninthChallenge(name) {
-        let result = 0;
+        let result = getOverlappingCoords();
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -162,7 +162,7 @@ const challenges = {
 
 
     tenthChallenge(name) {
-        let result = 0;
+        let result = getOverlappingCoords(true);
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -170,7 +170,8 @@ const challenges = {
 
 
     eleventhChallenge(name) {
-        let result = 0;
+        let result = getLanternFishNumber(80);
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -178,7 +179,8 @@ const challenges = {
 
 
     twelfthChallenge(name) {
-        let result = 0;
+        let result = getLanternFishNumber(256);
+        
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 

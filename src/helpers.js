@@ -79,3 +79,61 @@ const getNthWinningBingoBoardScore = (n = 1) => {
 
     return result;
 }
+
+const getOverlappingCoords = (includeDiagonals = false) => {
+    let ventMatrix = [], tempVentCoords = JSON.parse(JSON.stringify(ventCoords));
+
+        // Create the ventMatrix
+        for (let i = 0; i < 1000; i++) {
+            ventMatrix.push(Array(1000).fill(0));
+        }
+
+        console.log(ventMatrix);
+
+        tempVentCoords.forEach(coordPair => {
+
+            let xMatches = coordPair[0][0] === coordPair[1][0], 
+                yMatches = coordPair[0][1] === coordPair[1][1],
+                currentPair = coordPair[0];
+
+            // if we are not including diagonals, make sure one of the coords matches with the end result
+            if (includeDiagonals || xMatches || yMatches) {
+
+                // Record the coord of the final destination to the ventMatrix.
+                ventMatrix[coordPair[1][1]][coordPair[1][0]] += 1;
+
+                // Continue to record paths to the ventMatrix
+                // Add/subract from the initial coords until the starting/end coords match
+                while (!xMatches || !yMatches) {
+                    // console.log(currentPair, coordPair[1]);
+                    ventMatrix[currentPair[1]][currentPair[0]] += 1;
+
+                    if (!xMatches) {
+                        (currentPair[0] < coordPair[1][0]) ? currentPair[0]++ : currentPair[0]--;
+                        xMatches = currentPair[0] === coordPair[1][0];
+                    }
+                    
+                    if (!yMatches) {
+                        
+                        (currentPair[1] < coordPair[1][1]) ? currentPair[1]++ : currentPair[1]--;
+                        yMatches = currentPair[1] === coordPair[1][1];
+                    }
+                }
+            }
+        });
+
+        return ventMatrix.reduce((total, row) => total + row.filter(c => c > 1).length, 0);
+}
+
+const getLanternFishNumber = (days) => {
+    let tempLanternFish = [0,0,0,0,0,0,0,0,0];
+
+    lanternFish.forEach(fishy => tempLanternFish[fishy]++);
+
+    for (let j = 0; j < days; j++) {
+        tempLanternFish.push(tempLanternFish.shift());
+        tempLanternFish[6] += tempLanternFish[8];
+    }
+
+    return tempLanternFish.reduce((total, fishies) => total + fishies);
+}
