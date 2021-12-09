@@ -180,7 +180,7 @@ const challenges = {
 
     twelfthChallenge(name) {
         let result = getLanternFishNumber(256);
-        
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -189,6 +189,17 @@ const challenges = {
 
     thirteenthChallenge(name) {
         let result = 0;
+        const sortedCrabPositions = crabPositions.slice().sort((a,b) => a - b);
+        const middle = Math.floor(sortedCrabPositions.length / 2);
+
+        let medianCrab = (sortedCrabPositions.length % 2 === 0) ? Math.round((sortedCrabPositions[middle - 1] + sortedCrabPositions[middle]) / 2) : sortedCrabPositions[middle];
+
+        console.log(medianCrab);
+
+        sortedCrabPositions.forEach(crabPos => {
+            result += Math.abs(crabPos - medianCrab);
+        });
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -197,6 +208,26 @@ const challenges = {
 
     fourteenthChallenge(name) {
         let result = 0;
+
+        const avgCrabPos = Math.floor(crabPositions.reduce((t, n) => t + n) / crabPositions.length);
+        const crabPosList = crabPositions.reduce((obj, crabPos) => {
+            obj[crabPos] ? obj[crabPos]++ : obj[crabPos] = 1;
+            return obj;  
+        }, {});
+
+        Object.keys(crabPosList).forEach(crabPos => {
+            let diffFromAvg = Math.abs(crabPos - avgCrabPos),
+                fuelCost = 0;
+        
+            for (let i = diffFromAvg; i > 0; i--) {
+                fuelCost += i;
+            }
+
+            result += fuelCost * crabPosList[crabPos];
+        });
+
+        console.log('crabPositions:', crabPositions, 'avgCrabPos:', avgCrabPos, 'crabPosList:', crabPosList, 'result:', result);
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -205,6 +236,15 @@ const challenges = {
 
     fifteenthChallenge(name) {
         let result = 0;
+
+        displaySignals.forEach(signal => {
+            // Get the number of 1s, 4s, 7s and 8s
+            result += signal.reduce((total, letters, i) => {
+                if (i > 9 && [ 2, 3, 4, 7 ].includes(letters.length)) console.log(letters);
+                return (i > 9 && [ 2, 3, 4, 7 ].includes(letters.length)) ? ++total : total
+            }, 0);
+        });
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -213,6 +253,61 @@ const challenges = {
 
     sixteenthChallenge(name) {
         let result = 0;
+
+        displaySignals.forEach(signal => {
+
+            const signalLetterOrder = ['a','b','c','d','e','f','g'];
+            const signalLetters = ['', '',  '','','','',''];
+
+            const numberDict = [ 'abcefg', 'cf', 'acdeg', 'acdfg', 'bcdf', 'abdfg', 'abdefg', 'acf', 'abcdefg', 'abcdfg' ];
+
+            const [ displaySignals, output ] = [ signal.slice(0, 10), signal.slice(10) ];
+
+            const one = displaySignals.find(code => code.length === 2);
+            const three = displaySignals.find(code => code.length === 5 && code.includes(one.split('')[0]) && code.includes(one.split('')[1]));
+            const four = displaySignals.find(code => code.length === 4);
+            const seven = displaySignals.find(code => code.length === 3);
+
+            // a
+            signalLetters[0] = seven.split('').filter(l => !signalLetters.includes(l) && !one.split('').includes(l))[0];
+
+            // b
+            signalLetters[1] = four.split('').filter(l => !signalLetters.includes(l) && !three.split('').includes(l))[0];
+
+            const five = displaySignals.find(code => code.length === 5 && code.includes(signalLetters[1]));
+            const two = displaySignals.find(code => code.length === 5 && code !== three && code !== five);
+            
+            // c
+            signalLetters[2] = two.split('').filter(l => !signalLetters.includes(l) && one.split('').includes(l))[0];
+
+            // d
+            signalLetters[3] = two.split('').filter(l => !signalLetters.includes(l) && four.split('').includes(l))[0];
+
+            // e
+            signalLetters[4] = two.split('').filter(l => !signalLetters.includes(l) && !three.split('').includes(l))[0];
+            
+            // f
+            signalLetters[5] = one.split('').filter(l => !signalLetters.includes(l))[0];
+            
+            // g
+            signalLetters[6] = two.split('').filter(l => !signalLetters.includes(l))[0];
+
+            const decodedSignalLetters = signalLetters.reduce((obj, l, i) => {
+                obj[l] = signalLetterOrder[i];
+                return obj;
+            }, {});
+            
+            let number = parseInt(output.reduce((digits, code, i) => {
+                let decodedLetter = code.split('').map(letter => decodedSignalLetters[letter]).sort().join('');
+                
+                digits += numberDict.indexOf(decodedLetter);
+
+                return digits;
+            }, ''));
+
+            result += number;
+        });
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
