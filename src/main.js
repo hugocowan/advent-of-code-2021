@@ -316,6 +316,24 @@ const challenges = {
 
     seventeenthChallenge(name) {
         let result = 0;
+
+        heightMap.forEach((heightList, i) => {
+            const prevHeights = heightMap[i - 1] ? heightMap[i - 1].split('') : false;
+            const heights = heightList.split('');
+            const nextHeights = heightMap[i + 1] ? heightMap[i + 1].split('') : false;
+
+            heights.forEach((height, j) => {
+                if (
+                    (!heights[j - 1] || (heights[j - 1] && height < heights[j - 1]) ) && 
+                    (!heights[j + 1] || (heights[j + 1] && height < heights[j + 1]) ) && 
+                    (!prevHeights || (prevHeights && prevHeights[j] && height < prevHeights[j]) ) &&
+                    (!nextHeights || (nextHeights && nextHeights[j] && height < nextHeights[j]) )
+                ) {
+                    result += parseInt(height) + 1;
+                }
+            });
+        });
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
@@ -324,6 +342,52 @@ const challenges = {
 
     eighteenthChallenge(name) {
         let result = 0;
+        const basins = []; // One array per basin
+
+        heightMap.forEach((heightList, i) => {
+            const heights = heightList.split('');
+            
+
+            heights.forEach((height, j) => {
+
+                // console.log(i, j);
+
+                if (
+                    height !== '9'
+                ) {
+
+                    const adjacentBasinIndex = basins.reduce((index, basin, k) => {
+
+                        if (index !== -1) return index;
+                    
+                        basin.forEach(coords => {
+                            if (
+                                (coords[1] === i && (coords[0] === j + 1 || coords[0] === j - 1  || coords[0] === j) ) ||
+                                (coords[0] === j && (coords[1] === i + 1 || coords[1] === i - 1 || coords[1] === i) )
+                            ) {
+                                index = k;
+                            }
+                        });
+                        return index;
+                    }, -1);
+
+                    if (adjacentBasinIndex !== -1) {
+                        // console.log('adding to basin - ', 'height:', height, 'coords:', [j, i]);
+                        basins[adjacentBasinIndex].push([j, i]);
+                    } else {
+                        // console.log('new basin       - ', 'height:', height, 'coords:', [j, i]);
+                        basins.push([ [j, i] ]);
+                    }
+                }
+            });
+        });
+
+        let threeLargestBasins = basins.sort((a, b) => b.length - a.length).slice(0, 3);
+
+        console.log(basins, threeLargestBasins, threeLargestBasins.reduce((total, basin) => total + basin.length, 0));
+
+        result = threeLargestBasins.reduce((total, basin) => total + basin.length, 0);
+
         document.getElementsByClassName(`${name}Result`)[0].innerHTML = result;
     },
 
